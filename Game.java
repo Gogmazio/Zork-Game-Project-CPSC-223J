@@ -1,21 +1,71 @@
-import javax.swing.*;
-import java.util.ArrayList;
+// To DO:
+// relocate the flooring system for up down, in out movement.
+// create map of entire game
+// add enemies, equipment, treasure, and puzzles to map
+// add more parser terms
+// add cheat mode/hint mode
+// add autoplay mode
 
 public class Game {
-    private static Player player;
-    private final static Map gameMap = new Map();
+    private static Player player = new Player();
     private final static Parser inputParser = new Parser();
+    private final static LocationList maps = new LocationList();
+    private final static ItemList items = new ItemList();
+    private final static WeaponList weps = new WeaponList();
+    public final static Map gameMap = new Map();
 
     static void Start() {
-        gameMap.addRoom(new Room("roomName", "description", "roomType", 0));
-        gameMap.addRoom(new Room("roomName2", "description2", "roomType2", 1));
-        gameMap.getRoom(0).addDoor(new Door("DoorName", "North", gameMap.getRoom(1), false, false), 0, 1);
-        gameMap.getRoom(0).addWalls();
-        gameMap.getRoom(0).addObject(new Key("Key", "This is a key to a door."));
-        gameMap.getRoom(1).addDoor(new Door("DoorName2", "South", gameMap.getRoom(0), false, false), 2, 1);
-        gameMap.getRoom(1).addWalls();
+        gameMap.addRoom(new Room(maps.wOfHouse.name, maps.wOfHouse.desc, maps.wOfHouse.descVer, maps.wOfHouse.type, maps.wOfHouse.roomID));
+        gameMap.addRoom(new Room(maps.insideHouse.name, maps.insideHouse.desc, maps.insideHouse.descVer, maps.insideHouse.type, maps.insideHouse.roomID));
+        gameMap.addRoom(new Room(maps.frontOfHouse.name, maps.frontOfHouse.desc, maps.frontOfHouse.descVer, maps.frontOfHouse.type, maps.frontOfHouse.roomID));
+        gameMap.addRoom(new Room(maps.eastForest.name, maps.eastForest.desc, maps.eastForest.descVer, maps.eastForest.type, maps.eastForest.roomID));
+        gameMap.addRoom(new Room(maps.centralForest.name, maps.centralForest.desc, maps.centralForest.descVer, maps.centralForest.type, maps.centralForest.roomID));
+        gameMap.addRoom(new Room(maps.orcLair.name, maps.orcLair.desc, maps.orcLair.descVer, maps.orcLair.type, maps.orcLair.roomID));
+        gameMap.addRoom(new Room(maps.houseStorage.name, maps.houseStorage.desc, maps.houseStorage.descVer, maps.houseStorage.type, maps.houseStorage.roomID));
+        gameMap.addRoom(new Room(maps.houseStorageDown.name, maps.houseStorageDown.desc, maps.houseStorageDown.descVer, maps.houseStorageDown.type, maps.houseStorageDown.roomID));
+        gameMap.addRoom(new Room(maps.houseArmory.name, maps.houseArmory.desc, maps.houseArmory.descVer, maps.houseArmory.type, maps.houseArmory.roomID));
+        gameMap.addRoom(new Room(maps.houseArmoryUp.name, maps.houseArmoryUp.desc, maps.houseArmoryUp.descVer, maps.houseArmoryUp.type, maps.houseArmoryUp.roomID));
+        gameMap.getRoom(maps.wOfHouse.roomID).addDoor(new Door("toFrontHouse", "East", gameMap.getRoom(maps.frontOfHouse.roomID), false, false));
+        gameMap.getRoom(maps.wOfHouse.roomID).addDoor(new Door("toEastForest", "West", gameMap.getRoom(maps.eastForest.roomID), false, false));
+        gameMap.getRoom(maps.wOfHouse.roomID).addObject(new Key(items.key.name, items.key.desc, items.key.descVer, items.key.ID));
+        gameMap.getRoom(maps.wOfHouse.roomID).addObject(new MailBox(items.mailBox.name, items.mailBox.desc, items.mailBox.descVer, items.mailBox.ID));
+        gameMap.getRoom(maps.wOfHouse.roomID).addObject(new Letter(items.letter.name, items.letter.desc, items.letter.descVer, items.letter.ID));
+        gameMap.getRoom(maps.frontOfHouse.roomID).addDoor(new Door("toWofHouse", "West", gameMap.getRoom(maps.wOfHouse.roomID), false, false));
+        gameMap.getRoom(maps.frontOfHouse.roomID).addDoor(new Door("house", "Enter", gameMap.getRoom(maps.insideHouse.roomID), true, false));
+        gameMap.getRoom(maps.frontOfHouse.roomID).addDoor(new Door("window", "Enter", gameMap.getRoom(maps.insideHouse.roomID), false, false));
+        gameMap.getRoom(maps.insideHouse.roomID).addDoor(new Door("house","Exit", gameMap.getRoom(maps.frontOfHouse.roomID), true, false));
+        gameMap.getRoom(maps.insideHouse.roomID).addDoor(new Door("window","Exit", gameMap.getRoom(maps.frontOfHouse.roomID), false, false));
+        gameMap.getRoom(maps.insideHouse.roomID).addDoor(new Door("toArmory", "East", gameMap.getRoom(maps.houseArmory.roomID), false, false));
+        gameMap.getRoom(maps.insideHouse.roomID).addDoor(new Door("toStorage", "North", gameMap.getRoom(maps.houseStorage.roomID), false, false));
+        gameMap.getRoom(maps.insideHouse.roomID).addObject(new Table(items.table.name, items.table.desc, items.table.descVer, items.table.ID));
+        gameMap.getRoom(maps.eastForest.roomID).addDoor(new Door("toWofHouse", "East", gameMap.getRoom(maps.wOfHouse.roomID), false, false));
+        gameMap.getRoom(maps.eastForest.roomID).addDoor(new Door("toOrcLair", "South", gameMap.getRoom(maps.orcLair.roomID), false, false));
+        gameMap.getRoom(maps.eastForest.roomID).addDoor(new Door("toCentralForest", "West", gameMap.getRoom(maps.centralForest.roomID), false, false));
+        gameMap.getRoom(maps.eastForest.roomID).addDoor(new Door("toEastForest", "North", gameMap.getRoom(maps.eastForest.roomID), false, false));
+        gameMap.getRoom(maps.centralForest.roomID).addDoor(new Door("toEastForest", "East", gameMap.getRoom(maps.eastForest.roomID), false, false));
+        gameMap.getRoom(maps.centralForest.roomID).addCharacter(new ElfGuard());
+        gameMap.getRoom(maps.orcLair.roomID).addDoor(new Door("toEastForest", "North", gameMap.getRoom(maps.eastForest.roomID), false, false));
+        gameMap.getRoom(maps.orcLair.roomID).addCharacter(new Orc());
+        gameMap.getRoom(maps.houseArmory.roomID).addDoor(new Door("stairs", "Up", gameMap.getRoom(maps.houseArmoryUp.roomID), false, false));
+        gameMap.getRoom(maps.houseArmory.roomID).addDoor(new Door("toLiving", "West", gameMap.getRoom(maps.insideHouse.roomID), false, false));
+        gameMap.getRoom(maps.houseArmoryUp.roomID).addDoor(new Door("stairs", "Down", gameMap.getRoom(maps.houseArmory.roomID), false, false));
+        gameMap.getRoom(maps.houseStorage.roomID).addDoor(new Door("cellar", "Enter", gameMap.getRoom(maps.houseStorageDown.roomID), true, false));
+        gameMap.getRoom(maps.houseStorage.roomID).addDoor(new Door("toLiving", "South", gameMap.getRoom(maps.insideHouse.roomID), false, false));
+        gameMap.getRoom(maps.houseStorageDown.roomID).addDoor(new Door("stairs", "Down", gameMap.getRoom(maps.houseStorage.roomID), false, false));
+        gameMap.getRoom(maps.wOfHouse.roomID).addWalls();
+        gameMap.getRoom(maps.insideHouse.roomID).addWalls();
+        gameMap.getRoom(maps.frontOfHouse.roomID).addWalls();
+        gameMap.getRoom(maps.eastForest.roomID).addWalls();
+        gameMap.getRoom(maps.centralForest.roomID).addWalls();
+        gameMap.getRoom(maps.orcLair.roomID).addWalls();
+        gameMap.getRoom(maps.houseArmory.roomID).addWalls();
+        gameMap.getRoom(maps.houseArmoryUp.roomID).addWalls();
+        gameMap.getRoom(maps.houseStorage.roomID).addWalls();
+        gameMap.getRoom(maps.houseStorageDown.roomID).addWalls(); // Remember to add doors
 
         player = new Player("Player", 5, gameMap.getRoom(0));
+
+        player.checkArea();
     }
 
     public static void main(String[] args) {
@@ -24,199 +74,12 @@ public class Game {
         while(running) {
             System.out.println("MOVES: " + player.getMoves());
             inputParser.getPlayerInput();
-            inputParser.parseInput(player);
-            player.incrementTurn();
-        }
-    }
-}
+            inputParser.parseInput(gameMap, player);
 
-// Handles entire map
-class Map {
-    private final ArrayList<Room> Map = new ArrayList<>();
-    public Map(){ }
-    public void addRoom(Room room){
-        Map.add(room);
-    }
-
-    public Room getRoom(int roomID){
-        return this.Map.get(roomID);
-    }
-}
-
-// Handles wall objects
-class Wall {
-    String direction;
-    Wall(){ }
-    Wall(String direction){ this.direction = direction; }
-}
-
-interface TravelObj {
-    String direction = "";
-    String name = "";
-    Room connectedTo = null;
-    boolean isLocked = false;
-    boolean isHidden = false;
-
-    void unlock();
-    void uncover();
-}
-
-// Handles door objects
-class Door implements TravelObj {
-    String direction; // Direction door is located at in the perspective of the center of a room.
-    String doorName;  // Name of the door.
-    Room connectedTo; // Room the door is connected to.
-    boolean isLocked; // True if door is currently locked.
-    boolean isHidden; // True if door is currently hidden.
-
-    Door(){ }
-    Door(String doorName, String direction, Room connectedTo, boolean isLocked, boolean isHidden){
-        this.doorName = doorName;
-        this.direction = direction;
-        this.connectedTo = connectedTo;
-        this.isLocked = isLocked;
-        this.isHidden = isHidden;
-    }
-
-    public void unlock() { this.isLocked = false; }
-    public void uncover() { this.isHidden = false; }
-}
-
-// Contains room object
-class Room {
-    String roomName;                                          // Name of the room
-    String description;                                       // Description of the room
-    String roomType;                                          // Type of the room
-    int roomID;                                               // ID of the room
-    ArrayList<ZorkObj> objects = new ArrayList<>();           // Objects in the room
-    final int ROOM_SIZE = 3;                           // Constant for size of room
-    Door[][] doors = new Door[ROOM_SIZE][ROOM_SIZE];   // Doors that this room is connected to
-    Wall[][] walls = new Wall[ROOM_SIZE][ROOM_SIZE];   // Walls in this room
-
-    Room(){
-        this.roomName = "";
-        this.description = "";
-        this.roomType = "";
-        this.objects = null;
-        this.doors = null;
-    }
-    Room(String roomName){
-        this.roomName = roomName;
-        this.description = "This is an empty room";
-        this.roomType = "Empty";
-        this.objects = null;
-    }
-    Room(String roomName, String description, String roomType, int roomID){
-        this.roomName = roomName;
-        this.description = description;
-        this.roomType = roomType;
-        this.roomID = roomID;
-    }
-
-//    public String getRoomName(){ return this.roomName; }
-//    public String getRoomType(){ return this.roomType; }
-//    public String getDescription(){ return this.description; }
-//    public ArrayList<String> getObjects(){ return this.objects; }
-//    public Door[][] getDoors(){ return this.doors; }
-//    public Wall[][] getWalls(){ return this.walls; }
-
-    public void addWalls(){
-        for(int i = 0; i < ROOM_SIZE; i++) {
-            for(int j = 0; j < ROOM_SIZE; j++) {
-                if (walls[i][j] == null && doors[i][j] == null) {
-                    walls[i][j] = new Wall();
-                }
+            if (player.getHealth() == 0) {
+                running = false;
             }
         }
-    }
-
-    public void addDoor(Door door, int x, int y){
-        if (walls[x][y] == null && doors[x][y] == null) {
-            doors[x][y] = door;
-        }
-    }
-
-    public void addObject(ZorkObj objectName) {
-        this.objects.add(objectName);
-    }
-
-    public Door getConnectedRoom(String direction){
-        switch (direction){
-            case "north":
-            case "n":
-                if (walls[0][1] == null)
-                    return doors[0][1];
-                else if (doors[0][1] == null)
-                    System.out.println("There is a wall in this direction.");
-                    return null;
-            case "south":
-            case "s":
-                if (walls[2][1] == null)
-                    return doors[2][1];
-                else if (doors[2][1] == null)
-                    System.out.println("There is a wall in this direction.");
-                    return null;
-            case "east":
-            case "e":
-                if (walls[1][2] == null)
-                    return doors[1][2];
-                else if (doors[1][2] == null)
-                    System.out.println("There is a wall in this direction.");
-                    return null;
-            case "west":
-            case "w":
-                if (walls[1][0] == null)
-                    return doors[1][0];
-                else if (doors[1][0] == null)
-                    System.out.println("There is a wall in this direction.");
-                    return null;
-            case "northeast":
-            case "ne":
-                if (walls[0][2] == null)
-                    return doors[0][2];
-                else if (doors[0][2] == null)
-                    System.out.println("There is a wall in this direction.");
-                    return null;
-            case "northwest":
-            case "nw":
-                if (walls[0][0] == null)
-                    return doors[0][0];
-                else if (doors[0][0] == null)
-                    System.out.println("There is a wall in this direction.");
-                    return null;
-            case "southeast":
-            case "se":
-                if (walls[2][2] == null)
-                    return doors[2][2];
-                else if (doors[2][2] == null)
-                    System.out.println("There is a wall in this direction.");
-                    return null;
-            case "southwest":
-            case "sw":
-                if (walls[2][0] == null)
-                    return doors[2][0];
-                else if (doors[2][0] == null)
-                    System.out.println("There is a wall in this direction.");
-                    return null;
-            case "up":
-            case "down":
-            case "in":
-            case "out":
-                if (walls[1][1] == null)
-                    return doors[1][1];
-                else if (doors[1][1] == null)
-                    System.out.println("There is nothing in this direction.");
-                    return null;
-        }
-        return null;
-    }
-
-    public ZorkObj getObj(String name) {
-        for(int i = 0; i < this.objects.size(); i++) {
-            if (this.objects.get(i).getObjName().equals(name)) {
-                return this.objects.get(i);
-            }
-        }
-        return null;
+        player.die();
     }
 }
