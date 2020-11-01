@@ -2,13 +2,14 @@ import java.io.Serializable;
 
 interface ZorkObj {
     String getName();
-    String getWeaponType();
+
     String getDescription();
     String getDescriptionVerbose();
+    int getPoints();
     int getWeightLevel();
     int getAttackPower();
     int getDefense();
-    int getItemID();
+
     String getUnderDesc();
     String getInsideDesc();
     String getThroughDesc();
@@ -26,6 +27,7 @@ class Object implements ZorkObj, Serializable {
     String throughDesc;
     String behindDesc;
     String dialogue;
+    int points;
     int weightLevel;
     int attackPower;
     int defense;
@@ -41,18 +43,18 @@ class Object implements ZorkObj, Serializable {
         this.throughDesc = "Without X-Ray vision, you can not look through this object.";
         this.behindDesc = "There doesn't seem to be anything behind this.";
         this.dialogue = "You are trying to talk to a " + getName() + ". What did you expect?";
+        this.points = 0;
         this.weightLevel = 0;
         this.attackPower = 0;
         this.itemID = -1;
     }
     public String getName() { return this.name; }
-    public String getWeaponType() { return this.weaponType; }
     public String getDescription() { return this.description; }
     public String getDescriptionVerbose() { return this.descriptionVerbose; }
+    public int getPoints() { return this.points; }
     public int getWeightLevel() { return this.weightLevel; }
     public int getAttackPower() { return this.attackPower; }
     public int getDefense() { return this.defense; }
-    public int getItemID() { return this.itemID; }
     public String getUnderDesc() { return this.underDesc; }
     public String getInsideDesc() { return this.insideDesc; }
     public String getThroughDesc() { return this.throughDesc;}
@@ -63,19 +65,17 @@ class Object implements ZorkObj, Serializable {
     public void setWeaponType(String type) { this.weaponType = type;}
     public void setDescription(String des) { this.description = des;}
     public void setDescriptionVerbose(String desVer) { this.descriptionVerbose = desVer;}
+    public void setPoints(int points) { this.points = points; }
     public void setWeightLevel(int weight) { this.weightLevel = weight;}
     public void setAttackPower(int pow) { this.attackPower = pow;}
     public void setDefense(int def) { this.defense = def;}
     public void setItemID(int id) { this.itemID = id;}
-    public void setUnderDesc(String unDesc) { this.underDesc = unDesc;}
     public void setInsideDesc(String inDesc) { this.insideDesc = inDesc;}
-    public void setThroughDesc(String thDesc) { this.throughDesc = thDesc;}
-    public void setBehindDesc(String beDesc) { this.behindDesc = beDesc;}
     public void setDialogue(String dial) { this.dialogue = dial; }
 }
 
 class Key extends Object {
-    public Key(String name, String description, String descriptionVerbose, int itemID) {
+    public Key(String name, String description, String descriptionVerbose) {
         super();
         setName(name);
         setWeaponType("misc");
@@ -164,21 +164,6 @@ class Table extends Object {
     }
 }
 
-class Carpet extends Object {
-    public Carpet(String name, String description, String descriptionVerbose, int itemID) {
-        super();
-        setName(name);
-        setWeaponType("misc");
-        setDescription(description);
-        setDescriptionVerbose(descriptionVerbose);
-        setWeightLevel(0);
-        setAttackPower(0);
-        setDefense(0);
-        setItemID(itemID);
-        setDialogue("'Ouch! Don't step on me!' is what you'd imagine the carpet would say if it could speak.");
-    }
-}
-
 class MailBox extends Object {
     public MailBox(String name, String description, String descriptionVerbose, int itemID) {
         super();
@@ -210,12 +195,37 @@ class Letter extends Object {
     }
 }
 
-class Treasure extends Object {
-    public Treasure(String name, String description, String descriptionVerbose, int itemID) {
+class Diamond extends Object {
+    public Diamond(String name, String description, String descriptionVerbose, int itemID) {
         super();
         setName(name);
         setDescription(description);
         setDescriptionVerbose(descriptionVerbose);
+        setPoints(5);
+        setItemID(itemID);
+        setDialogue("Did you expect the " + getName() + " to talk back?");
+    }
+}
+
+class SapphireCrystal extends Object {
+    public SapphireCrystal(String name, String description, String descriptionVerbose, int itemID) {
+        super();
+        setName(name);
+        setDescription(description);
+        setDescriptionVerbose(descriptionVerbose);
+        setPoints(7);
+        setItemID(itemID);
+        setDialogue("Did you expect the " + getName() + " to talk back?");
+    }
+}
+
+class GoldTrinket extends Object {
+    public GoldTrinket(String name, String description, String descriptionVerbose, int itemID) {
+        super();
+        setName(name);
+        setDescription(description);
+        setDescriptionVerbose(descriptionVerbose);
+        setPoints(6);
         setItemID(itemID);
         setDialogue("Did you expect the " + getName() + " to talk back?");
     }

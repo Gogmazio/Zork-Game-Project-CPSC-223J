@@ -5,6 +5,8 @@ public class ItemList {
     public ItemInfo mailBox = new ItemInfo();
     public ItemInfo letter = new ItemInfo();
     public ItemInfo diamond = new ItemInfo();
+    public ItemInfo sapphire = new ItemInfo();
+    public ItemInfo goldTrinket = new ItemInfo();
 
     public ItemList() {
         key.setName("KEY");
@@ -35,6 +37,14 @@ public class ItemList {
                 "\nAttached to this letter is a key. Use it to open any locked doors you may find on your way!" +
                 "\nWe hope you have fun!'");
         letter.setID(5);
+        sapphire.setName("SAPPHIRE CRYSTAL");
+        sapphire.setDesc("It's a crystal that shines a bright blue color.");
+        sapphire.setDescVer("It's a crystal that shines a bright blue color. Looks like it's worth a lot.");
+        sapphire.setID(6);
+        goldTrinket.setName("GOLD TRINKET");
+        goldTrinket.setDesc("It's a necklace made out of gold.");
+        goldTrinket.setDescVer("It's a made out of gold. Might sell for a lot of money.");
+        goldTrinket.setID(7);
     }
 }
 

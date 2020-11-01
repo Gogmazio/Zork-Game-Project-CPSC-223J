@@ -9,7 +9,7 @@ public class WeaponList {
         sword.setWeaponType("sword");
         sword.setdesc("A common sword.");
         sword.setdescVer("A common sword. Looks durable enough to swing 10 times.");
-        sword.setAttackPower(1);
+        sword.setAttackPower(2);
         sword.setID(0);
         axe.setName("AXE");
         axe.setWeaponType("axe");
@@ -21,7 +21,7 @@ public class WeaponList {
         spear.setWeaponType("spear");
         spear.setdesc("A common two-handed spear.");
         spear.setdescVer("A common two-handed spear. Looks sharp enough to stab through diamonds.");
-        spear.setAttackPower(1);
+        spear.setAttackPower(3);
         spear.setID(2);
         shield.setName("SHIELD");
         shield.setWeaponType("shield");

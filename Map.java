@@ -1,4 +1,3 @@
-import javax.sound.midi.SysexMessage;
 import java.util.ArrayList;
 
 // Handles entire map
@@ -16,14 +15,11 @@ class Map {
 
 // Handles wall objects
 class Wall {
-    String direction;
     Wall(){ }
-    Wall(String direction){ this.direction = direction; }
 }
 
 interface TravelObj {
     void unlock();
-    void uncover();
 }
 
 // Handles door objects
@@ -34,7 +30,6 @@ class Door implements TravelObj {
     boolean isLocked; // True if door is currently locked.
     boolean isHidden; // True if door is currently hidden.
 
-    Door(){ }
     Door(String name, String direction, Room connectedTo, boolean isLocked, boolean isHidden){
         this.name = name;
         this.direction = direction;
@@ -43,46 +38,26 @@ class Door implements TravelObj {
         this.isHidden = isHidden;
     }
 
-    public String getName() { return this.name; }
     public boolean getLocked() { return this.isLocked; }
-    public boolean getHidden() { return this.isHidden; }
 
     public void unlock() { this.isLocked = false; }
-    public void lock() { this.isLocked = true; }
-    public void uncover() { this.isHidden = false; }
-    public void cover() { this.isHidden = true; }
 }
 
 // Contains room object
 class Room {
-    private String roomName;                                    // Name of the room
-    private String description;                                 // Description of the room
-    private String descriptionVerbose;                          // Detailed description of the room
-    private String roomType;                                    // Type of the room
-    private int roomID;                                         // ID of the room
-    private ArrayList<ZorkObj> objects = new ArrayList<>();     // Objects in this room
-    private ArrayList<Character> characters = new ArrayList<>();// Characters in this room
-    private final int ROOM_SIZE_W = 4;                          // Constant for width of room
-    private final int ROOM_SIZE_H = 4;                          // Constant for height of room
-    private Door[][] doors = new Door[ROOM_SIZE_W][ROOM_SIZE_H];// Doors that this room is connected to
-    private Wall[][] walls = new Wall[ROOM_SIZE_W][ROOM_SIZE_H];// Walls in this room
+    private final String roomName;                                    // Name of the room
+    private final String description;                                 // Description of the room
+    private final String descriptionVerbose;                          // Detailed description of the room
+    private final String roomType;                                    // Type of the room
+    private final int roomID;                                         // ID of the room
+    private final ArrayList<ZorkObj> objects = new ArrayList<>();     // Objects in this room
+    private final ArrayList<Character> characters = new ArrayList<>();// Characters in this room
+    private final int ROOM_SIZE_W = 4;                                // Constant for width of room
+    private final int ROOM_SIZE_H = 4;                                // Constant for height of room
+    private final Door[][] doors = new Door[ROOM_SIZE_W][ROOM_SIZE_H];// Doors that this room is connected to
+    private final Wall[][] walls = new Wall[ROOM_SIZE_W][ROOM_SIZE_H];// Walls in this room
 
     // Constructors
-    Room(){
-        this.roomName = "";
-        this.description = "";
-        this.descriptionVerbose = "";
-        this.roomType = "";
-        this.objects = null;
-        this.doors = null;
-    }
-    Room(String roomName){
-        this.roomName = roomName;
-        this.description = "This is an empty room";
-        this.descriptionVerbose = "This is an empty room.";
-        this.roomType = "Empty";
-        this.objects = null;
-    }
     Room(String roomName, String description, String descriptionVerbose, String roomType, int roomID){
         this.roomName = roomName;
         this.description = description;
@@ -98,34 +73,15 @@ class Room {
     public String getDescription(){ return this.description; }
     public String getDescriptionVerbose() { return this.descriptionVerbose; }
     public int getObjLength() { return this.objects.size(); }
-    public ArrayList<ZorkObj> getObjects() { return this.objects; }
-    public void getDoors() {
-        for (int i = 0; i < this.ROOM_SIZE_W; i++) {
-            for (int j = 0; j < this.ROOM_SIZE_H; j++) {
-                System.out.print(this.doors[j][i] + " ");
-            }
-            System.out.println();
-        }
-    }
-    public void getWalls() {
-        for (int i = 0; i < this.ROOM_SIZE_W; i++) {
-            for (int j = 0; j < this.ROOM_SIZE_H; j++) {
-                System.out.print(this.walls[j][i] + " ");
-            }
-            System.out.println();
-        }
-    }
     public ZorkObj getObjNoDel(String name) {
-        assert this.objects != null;
-        for(int i = 0; i < this.objects.size(); i++) {
-            if (this.objects.get(i).getName().equals(name)) {
-                return this.objects.get(i);
+        for (ZorkObj object : this.objects) {
+            if (object.getName().equals(name)) {
+                return object;
             }
         }
         return null;
     }
     public ZorkObj getObj(String name) {
-        assert this.objects != null;
         for(int i = 0; i < this.objects.size(); i++) {
             if (this.objects.get(i).getName().equals(name)) {
                 ZorkObj object = this.objects.get(i);
@@ -138,37 +94,34 @@ class Room {
         return null;
     }
     public ZorkObj getObj() {
-        assert this.objects != null;
         ZorkObj object = this.objects.get(0);
         this.objects.remove(0);
         return object;
     }
     public Character getChara(String name) {
-        assert this.characters != null;
-        for(int i = 0; i < this.characters.size(); i++) {
-            if (this.characters.get(i).getName().equals(name)) {
-                Character character = this.characters.get(i);
-                return character;
+        for (Character value : this.characters) {
+            if (value.getName().equals(name)) {
+                return value;
             }
         }
         return null;
     }
     public ArrayList<Character> getCharacters() { return this.characters; }
 
+    // Returns true if object with 'name' is found in the current room
     public boolean isObjInRoom(String name) {
-        assert this.objects != null;
-        for(int i = 0; i < this.objects.size(); i++) {
-            if (this.objects.get(i).getName().equals(name)) {
+        for (ZorkObj object : this.objects) {
+            if (object.getName().equals(name)) {
                 return true;
             }
         }
         return false;
     }
 
+    // Returns true if character with 'name' is found in the current room
     public boolean isCharaInRoom(String name) {
-        assert this.characters != null;
-        for(int i = 0; i < this.characters.size(); i++) {
-            if (this.characters.get(i).getName().equals(name)) {
+        for (Character character : this.characters) {
+            if (character.getName().equals(name)) {
                 return true;
             }
         }
@@ -334,6 +287,7 @@ class Room {
         return null;
     }
 
+    // Returns the connected room of a door object when given a direction that is up, down, enter, exit, or use.
     public Door getConnectedRoom(String dir, String doorName) {
         switch(dir) {
             case "up":
